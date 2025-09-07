@@ -107,6 +107,7 @@ const services = [
 const ServiceGrid = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedService, setSelectedService] = useState<{title: string, category: string} | null>(null);
+  const [showAllServices, setShowAllServices] = useState(false);
 
   const handleServiceClick = (service: {title: string, category: string}) => {
     setSelectedService(service);
@@ -151,8 +152,8 @@ const ServiceGrid = () => {
         </div>
 
         {/* Services Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {services.map((service, index) => {
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {(showAllServices ? services : services.slice(0, 4)).map((service, index) => {
             const IconComponent = service.icon;
             return (
               <Card 
@@ -180,6 +181,22 @@ const ServiceGrid = () => {
             );
           })}
         </div>
+
+        {/* View More Button */}
+        {!showAllServices && (
+          <div className="text-center mt-8">
+            <Button 
+              onClick={() => setShowAllServices(true)}
+              variant="outline" 
+              className="gradient-primary text-primary-foreground border-0 hover:shadow-medium"
+            >
+              Lihat Selengkapnya
+              <span className="ml-2 bg-white/20 text-xs px-2 py-0.5 rounded-full">
+                +{services.length - 4} Layanan
+              </span>
+            </Button>
+          </div>
+        )}
 
         {/* Service Modal */}
         {selectedService && (
