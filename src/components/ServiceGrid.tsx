@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { 
   Users, 
   Building2, 
@@ -14,6 +15,7 @@ import {
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import ServiceModal from "./ServiceModal";
 
 const services = [
   {
@@ -103,6 +105,14 @@ const services = [
 ];
 
 const ServiceGrid = () => {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedService, setSelectedService] = useState<{title: string, category: string} | null>(null);
+
+  const handleServiceClick = (service: {title: string, category: string}) => {
+    setSelectedService(service);
+    setModalOpen(true);
+  };
+
   const categories = [
     { id: "semua", name: "Semua Layanan", count: services.length },
     { id: "layanan", name: "Layanan Publik", count: services.filter(s => s.category === "layanan").length },
@@ -147,10 +157,11 @@ const ServiceGrid = () => {
             return (
               <Card 
                 key={index} 
-                className="gradient-card border-0 shadow-soft hover:shadow-medium transition-all duration-300 hover:-translate-y-1 cursor-pointer group"
+                className="gradient-card border-0 shadow-soft hover:shadow-medium transition-all duration-300 hover:-translate-y-1 cursor-pointer group animate-fade-in"
+                onClick={() => handleServiceClick({title: service.title, category: service.category})}
               >
                 <CardContent className="p-6 text-center">
-                  <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${service.color} flex items-center justify-center shadow-soft group-hover:animate-float`}>
+                  <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br ${service.color} flex items-center justify-center shadow-soft group-hover:scale-110 transition-all duration-300`}>
                     <IconComponent className="w-8 h-8 text-white" />
                   </div>
                   <h3 className="font-semibold text-card-foreground mb-2 group-hover:text-primary transition-colors">
@@ -169,6 +180,16 @@ const ServiceGrid = () => {
             );
           })}
         </div>
+
+        {/* Service Modal */}
+        {selectedService && (
+          <ServiceModal 
+            isOpen={modalOpen}
+            onClose={() => setModalOpen(false)}
+            serviceTitle={selectedService.title}
+            serviceCategory={selectedService.category}
+          />
+        )}
       </div>
     </section>
   );
